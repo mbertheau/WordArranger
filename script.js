@@ -55,8 +55,10 @@ function startDragging(event) {
   }
   event.preventDefault();
   sourceElement = wordElement;
-  sourceElement.style.opacity = '0.5';
+  sourceElement.style.transform = 'scale(1.4)';
+  sourceElement.style.color = 'black';
 }
+
 
 
 function updateDraggedWordPosition(clientX, clientY) {
@@ -92,6 +94,8 @@ function stopDragging(event) {
     return;
   }
   sourceElement.style.opacity = '1';
+  sourceElement.style.transform = '';
+  sourceElement.style.color = '';
   sourceElement = null;
 }
 
