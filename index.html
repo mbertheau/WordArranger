@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Arranger</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Arrange Words</title>
 </head>
 <body>
+  <div id="app">
     <div id="step1" class="step">
-        <h1>Enter a sentence</h1>
-        <textarea id="sentence-input" rows="5" cols="50"></textarea>
-        <br>
-        <button id="proceed-btn">Proceed</button>
+      <textarea id="inputSentence" rows="4" cols="50" placeholder="Enter a sentence..."></textarea>
+      <button id="btnProceed">Proceed to Step 2</button>
     </div>
-    <div id="step2" class="step" style="display: none;">
-        <div id="top-half" class="half"></div>
-        <div id="bottom-half" class="half">
-            <div id="word-container"></div>
-            <a href="#" id="link-to-sentence">Link to this sentence</a>
-            <button id="back-btn">Back</button>
-        </div>
+    <div id="step2" class="step">
+      <div id="topHalf">
+        <div id="arrangedWords" class="word-container"></div>
+      </div>
+      <div id="bottomHalf">
+        <div id="wordList" class="word-container"></div>
+        <button id="btnBack">Back to Step 1</button>
+        <a id="linkToSentence" href="#">Link to this sentence</a>
+      </div>
     </div>
-    <script src="script.js"></script>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>

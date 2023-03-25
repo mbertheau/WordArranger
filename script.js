@@ -1,122 +1,130 @@
 const step1 = document.getElementById('step1');
 const step2 = document.getElementById('step2');
-const sentenceInput = document.getElementById('sentence-input');
-const proceedBtn = document.getElementById('proceed-btn');
-const topHalf = document.getElementById('top-half');
-const bottomHalf = document.getElementById('bottom-half');
-const wordContainer = document.getElementById('word-container');
-const backBtn = document.getElementById('back-btn');
+const inputSentence = document.getElementById('inputSentence');
+const btnProceed = document.getElementById('btnProceed');
+const btnBack = document.getElementById('btnBack');
+const topHalf = document.getElementById('topHalf');
+const arrangedWords = document.getElementById('arrangedWords');
+const wordList = document.getElementById('wordList');
+const linkToSentence = document.getElementById('linkToSentence');
 
-function init() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sentence = urlParams.get('sentence');
-    if (sentence) {
-        sentenceInput.value = sentence;
-        proceedToStep2();
-    }
+let draggingWord = null;
+let draggingIndex = -1;
+
+function showStep1() {
+  step1.style.display = 'flex';
+  step2.style.display = 'none';
 }
 
-function proceedToStep2() {
-    step1.style.display = 'none';
-    step2.style.display = 'block';
+function showStep2() {
+  step1.style.display = 'none';
+  step2.style.display = 'flex';
+}
 
-    const sentence = sentenceInput.value.trim();
-    const words = sentence.split(/\s+/).sort();
+function getWords(sentence) {
+  return sentence.trim().split(/\s+/).sort();
+}
 
-    // Update the link
-    const linkToSentence = document.getElementById('link-to-sentence');
-    const encodedSentence = encodeURIComponent(sentence);
-    linkToSentence.href = `?sentence=${encodedSentence}`;
+function createWordElement(text, clickHandler) {
+  const word = document.createElement('span');
+  word.classList.add('word');
+  word.textContent = text;
+  word.addEventListener('click', clickHandler);
+  return word;
+}
+
+function arrangeWords() {
+  const sentence = inputSentence.value || new URLSearchParams(window.location.search).get('sentence');
+  if (sentence) {
+    history.replaceState({}, '', location.pathname);
+    const words = getWords(sentence);
+    wordList.innerHTML = '';
+    arrangedWords.innerHTML = '';
 
     words.forEach(word => {
-        const wordElem = document.createElement('div');
-        wordElem.textContent = word;
-        wordElem.classList.add('word');
-        wordContainer.appendChild(wordElem);
-
-        wordElem.addEventListener('click', () => {
-            if (wordElem.parentElement === wordContainer) {
-                topHalf.appendChild(wordElem);
-            } else {
-                wordContainer.appendChild(wordElem);
-            }
-        });
-
-        wordElem.addEventListener('mousedown', startDragging);
-        wordElem.addEventListener('touchstart', startDragging);
+      const wordElement = createWordElement(word, () => {
+        wordList.removeChild(wordElement);
+        arrangedWords.appendChild(wordElement);
+      });
+      wordList.appendChild(wordElement);
     });
+
+    linkToSentence.href = `${location.pathname}?sentence=${encodeURIComponent(sentence)}`;
+    showStep2();
+  } else {
+    showStep1();
+  }
 }
 
-function startDragging(event) {
-    const wordElem = event.target;
-    if (wordElem.parentElement !== topHalf) return;
+function updateDragging(e) {
+  if (draggingWord) {
+    const rect = topHalf.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    event.preventDefault();
+    let newIndex = -1;
+    let minDistance = Infinity;
 
-    wordElem.classList.add('dragging');
+    Array.from(arrangedWords.children).forEach((word, index) => {
+      const wordRect = word.getBoundingClientRect();
+      const dx = x - (wordRect.left + wordRect.width / 2 - rect.left);
+      const dy = y - (wordRect.top + wordRect.height / 2 - rect.top);
+      const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const onMove = (event) => {
-        event.preventDefault();
-        const clientX = event.clientX || event.touches[0].clientX;
-        const clientY = event.clientY || event.touches[0].clientY;
-        const topHalfRect = topHalf.getBoundingClientRect();
+      if (distance < minDistance) {
+        newIndex = index;
+        minDistance = distance;
+      }
+    });
 
-        if (clientY > topHalfRect.bottom) {
-            wordContainer.appendChild(wordElem);
-            wordElem.classList.remove('dragging');
-            return;
-        }
-
-        wordElem.style.position = 'absolute';
-        wordElem.style.left = (clientX - topHalfRect.left - wordElem.clientWidth / 2) + 'px';
-        wordElem.style.top = (clientY - topHalfRect.top - wordElem.clientHeight / 2) + 'px';
-
-        const siblings = Array.from(topHalf.children).filter(elem => elem !== wordElem);
-        let targetIndex = -1;
-
-        for (let i = 0; i < siblings.length; i++) {
-            const siblingRect = siblings[i].getBoundingClientRect();
-            if (clientX < siblingRect.left + siblingRect.width / 2) {
-                targetIndex = i;
-                break;
-            }
-        }
-
-        if (targetIndex === -1) {
-            topHalf.appendChild(wordElem);
-        } else {
-            topHalf.insertBefore(wordElem, siblings[targetIndex]);
-        }
-    };
-
-    const onEnd = () => {
-        wordElem.classList.remove('dragging');
-        wordElem.style.position = '';
-        wordElem.style.left = '';
-        wordElem.style.top = '';
-
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onEnd);
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('touchend', onEnd);
-        document.removeEventListener('touchcancel', onEnd);
-    };
-
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onEnd);
-    document.addEventListener('touchmove', onMove);
-    document.addEventListener('touchend', onEnd);
-    document.addEventListener('touchcancel', onEnd);
-}
-
-proceedBtn.addEventListener('click', proceedToStep2);
-backBtn.addEventListener('click', () => {
-    step1.style.display = 'block';
-    step2.style.display = 'none';
-
-    while (wordContainer.firstChild) {
-        wordContainer.firstChild.remove();
+    if (y < 0 || y > rect.height) {
+      arrangedWords.removeChild(draggingWord);
+      wordList.appendChild(draggingWord);
+    } else if (newIndex !== draggingIndex) {
+      arrangedWords.insertBefore(draggingWord, arrangedWords.children[newIndex] || null);
+      draggingIndex = newIndex;
     }
+  }
+}
+
+btnProceed.addEventListener('click', arrangeWords);
+btnBack.addEventListener('click', showStep1);
+
+topHalf.addEventListener('mousedown', e => {
+  if (e.target.classList.contains('word')) {
+    draggingWord = e.target;
+    draggingWord.classList.add('dragging');
+  }
 });
 
-init();
+topHalf.addEventListener('mousemove', updateDragging);
+
+topHalf.addEventListener('mouseup', () => {
+  if (draggingWord) {
+    draggingWord.classList.remove('dragging');
+    draggingWord = null;
+    draggingIndex = -1;
+  }
+});
+
+topHalf.addEventListener('touchstart', e => {
+  if (e.target.classList.contains('word')) {
+    draggingWord = e.target;
+    draggingWord.classList.add('dragging');
+  }
+}, { passive: false });
+
+topHalf.addEventListener('touchmove', e => {
+  e.preventDefault();
+  updateDragging(e.touches[0]);
+}, { passive: false });
+
+topHalf.addEventListener('touchend', () => {
+  if (draggingWord) {
+    draggingWord.classList.remove('dragging');
+    draggingWord = null;
+    draggingIndex = -1;
+  }
+});
+
+arrangeWords();
