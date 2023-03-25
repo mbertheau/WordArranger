@@ -1,28 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Arrange Words</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrange Words</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
-    <div id="step1" class="step">
-      <textarea id="inputSentence" rows="4" cols="50" placeholder="Enter a sentence..."></textarea>
-      <button id="btnProceed">Proceed to Step 2</button>
+    <div id="language-icons">
+        <img class="lang-icon" src="" alt="English" data-lang="en">
+        <img class="lang-icon" src="" alt="German" data-lang="de">
+        <img class="lang-icon" src="" alt="Traditional Chinese" data-lang="zh">
+        <img class="lang-icon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjZmZmIi8+Cjx0ZXh0IHg9IjEwIiB5PSIzMiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMDAiPkjqs6DsoJQ8L3RleHQ+Cjwvc3ZnPgo=" alt="Korean" data-lang="ko">
     </div>
-    <div id="step2" class="step">
-      <div id="topHalf">
-        <div id="arrangedWords" class="word-container"></div>
-      </div>
-      <div id="bottomHalf">
-        <div id="wordList" class="word-container"></div>
-        <button id="btnBack">Back to Step 1</button>
-        <a id="linkToSentence" href="#">Link to this sentence</a>
-      </div>
+
+    <div id="step1">
+        <textarea id="sentence-input" rows="4" cols="50"></textarea>
+        <button id="arrange-words-btn">Arrange words</button>
     </div>
-  </div>
-  <script src="script.js"></script>
+
+    <div id="step2" class="hidden">
+        <div id="arranged-words"></div>
+        <div id="alphabetical-words"></div>
+        <button id="change-sentence-btn">Change sentence</button>
+        <a id="link-to-sentence" href="#">Link to this sentence</a>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
