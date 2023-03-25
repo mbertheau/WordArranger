@@ -108,11 +108,11 @@ function findTargetElement(x, y) {
   return touchPoint ? touchPoint.closest('.word') : null;
 }
 function showStep1() {
-  document.getElementById('step-1').style.display = 'block';
-  document.getElementById('step-2').style.display = 'none';
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
 }
 
 function showStep2() {
-  document.getElementById('step-1').style.display = 'none';
-  document.getElementById('step-2').style.display = 'block';
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
 }
