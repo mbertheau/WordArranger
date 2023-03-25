@@ -1,79 +1,112 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    padding: 0;
     height: 100vh;
-    justify-content: center;
-    align-items: center;
-}
-
-.language-icons {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-bottom: 20px;
+    flex-direction: column;
+    background-color: #f0f0f0;
 }
 
-.lang-icon {
-    width: 40px;
-    height: 40px;
+#language-selection {
+    background-color: #4CAF50;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+button {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    margin: 0 5px;
     cursor: pointer;
+    font-size: 14px;
 }
 
-#step1, #step2 {
-    width: 100%;
+button:hover {
+    background-color: #f0f0f0;
+}
+
+.step {
+    display: none;
+}
+
+#step1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    flex: 1;
 }
 
-#sentence-input {
+#input-sentence {
     width: 80%;
-    margin-bottom: 20px;
+    padding: 5px;
+    font-size: 14px;
 }
 
-#arranged-words, #alphabetical-words {
+#arrange-words {
+    margin-top: 20px;
+}
+
+#step2 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#arranged-words, #word-list {
+    flex: 1;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
-    width: 100%;
+    gap: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#arranged-words {
+    background-color: #dfe6e9;
+}
+
+#word-list {
+    background-color: #f0f0f0;
 }
 
 .word {
-    background-color: #e0e0e0;
-    border: 1px solid #c0c0c0;
+    padding: 5px 10px;
+    background-color: #74b9ff;
     border-radius: 5px;
-    padding: 8px;
-    margin: 5px;
+    font-size: 14px;
     cursor: pointer;
     user-select: none;
 }
 
+.word:hover {
+    background-color: #0984e3;
+}
+
 .word.dragging {
-    font-size: 1.5em;
+    transform: scale(1.5);
 }
 
-.hidden {
-    display: none;
-}
-
-#step2 {
-    height: 100%;
-    flex-direction: column;
+#step2-actions {
+    display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
 }
 
-#arranged-words {
-    flex-grow: 1;
+#link-to-sentence {
+    text-decoration: none;
+    color: #4CAF50;
 }
 
-.correct-order {
-    border: 2px solid #4caf50;
+#link-to-sentence:hover {
+    color: #155724;
 }
