@@ -47,8 +47,10 @@ function moveWordToTop(wordElement) {
 }
 
 let sourceElement = null;
+let arrangedRows = 0;
+let rowHeight = 0;
 
-function startDragging(event) {
+function startDragging1(event) {
   const wordElement = event.target.closest('.word');
   if (!wordElement) {
     return;
@@ -59,9 +61,7 @@ function startDragging(event) {
   sourceElement.style.color = 'black';
 }
 
-
-
-function updateDraggedWordPosition(clientX, clientY) {
+function updateDraggedWordPosition1(clientX, clientY) {
   const targetElement = findTargetElement(clientX, clientY);
 
   if (!targetElement || targetElement === sourceElement) return;
@@ -75,6 +75,73 @@ function updateDraggedWordPosition(clientX, clientY) {
   } else {
     arrangedWordsContainer.insertBefore(sourceElement, targetElement.nextSibling);
   }
+}
+
+function updateDraggedWordPosition(clientX, clientY) {
+  const targetElement = findTargetElement(clientX, clientY);
+
+  if (!targetElement) return;
+
+  const arrangedWordsContainer = sourceElement.closest('#arranged-words');
+  const targetRect = targetElement.getBoundingClientRect();
+
+  const targetRow = Math.floor((clientY - targetRect.top) / rowHeight);
+  let targetRowIndex = arrangedRows - 1;
+  if (targetRow > 0) {
+    targetRowIndex = Math.min(targetRowIndex, targetRow);
+  }
+  if (targetRowIndex < 0) {
+    targetRowIndex = 0;
+  }
+
+  const currentRow = Math.floor((clientY - arrangedWordsContainer.getBoundingClientRect().top) / rowHeight);
+  const currentRowIndex = Math.min(Math.max(currentRow, 0), arrangedRows - 1);
+
+  if (targetElement === sourceElement) {
+    const rowElements = arrangedWordsContainer.querySelectorAll('.word-row');
+    const sourceIndex = Array.from(rowElements[currentRowIndex].querySelectorAll('.word')).indexOf(sourceElement);
+    const targetIndex = Array.from(rowElements[currentRowIndex].querySelectorAll('.word')).indexOf(targetElement);
+
+    if (sourceIndex === targetIndex || sourceIndex + 1 === targetIndex) {
+      return;
+    }
+
+    if (sourceIndex < targetIndex) {
+      targetElement.parentNode.insertBefore(sourceElement, targetElement.nextSibling);
+    } else {
+      targetElement.parentNode.insertBefore(sourceElement, targetElement);
+    }
+  } else if (targetElement.parentNode.classList.contains('word-row')) {
+    arrangedWordsContainer.insertBefore(sourceElement, targetElement);
+  } else {
+    arrangedWordsContainer.insertBefore(sourceElement, arrangedWordsContainer.lastChild.nextSibling);
+  }
+
+  const newRowElements = arrangedWordsContainer.querySelectorAll('.word-row');
+  if (newRowElements.length !== arrangedRows) {
+    arrangedRows = newRowElements.length;
+    rowHeight = arrangedWordsContainer.getBoundingClientRect().height / arrangedRows;
+  }
+
+  const newRowIndex = Array.from(newRowElements).indexOf(sourceElement.parentNode);
+  if (newRowIndex !== currentRowIndex) {
+    arrangedWordsContainer.insertBefore(sourceElement, newRowElements[newRowIndex].firstChild);
+  }
+}
+
+function startDragging(event) {
+  const wordElement = event.target.closest('.word');
+  if (!wordElement) {
+    return;
+  }
+  event.preventDefault();
+  sourceElement = wordElement;
+  sourceElement.style.transform = 'scale(1.4)';
+  sourceElement.style.color = 'black';
+
+  const arrangedWordsContainer = sourceElement.closest('#arranged-words');
+  arrangedRows = arrangedWordsContainer.querySelectorAll('.word-row').length;
+  rowHeight = arrangedWordsContainer.getBoundingClientRect().height / arrangedRows;
 }
 
 function onMouseMove(event) {
