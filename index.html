@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Arranger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #word-form {
+      margin-bottom: 1rem;
+    }
+
+    #word-form input[type="text"] {
+      margin-right: 1rem;
+    }
+
+    #words-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .words {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .word {
+      border: 1px solid black;
+      padding: 0.5rem;
+      margin: 0.25rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div id="step1">
+      <form id="word-form">
+        <input type="text" id="word-input" value="지순 씨 오늘따라 왜 그리 말 없다 저 원래 처음 보다 사람 앞 낯 좀 가리다"
+          placeholder="Enter words separated by space">
+        <button type="submit">Proceed</button>
+      </form>
+    </div>
+    <div id="step2" style="display: none;">
+      <button id="back-button">Back</button>
+      <div id="words-container">
+        <div class="words" id="arranged-words"></div>
+        <div class="words" id="alphabetical-words"></div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
