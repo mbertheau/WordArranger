@@ -14,7 +14,7 @@ function displayWords(words) {
 
   const alphabeticalContainer = document.getElementById('alphabetical-words');
   alphabeticalContainer.innerHTML = '';
-  
+
   words.forEach(word => {
     const wordElement = document.createElement('div');
     wordElement.className = 'word';
@@ -27,43 +27,37 @@ function displayWords(words) {
 function moveWordToTop(wordElement) {
   const arrangedContainer = document.getElementById('arranged-words');
   const newWordElement = wordElement.cloneNode(true);
-  
+
   newWordElement.addEventListener('click', () => {
     wordElement.style.display = 'block';
     arrangedContainer.removeChild(newWordElement);
   });
-  
-  newWordElement.addEventListener('touchstart', onTouchStart);
+
+  newWordElement.addEventListener('touchstart', startDragging);
   newWordElement.addEventListener('touchmove', onTouchMove);
-  newWordElement.addEventListener('touchend', onTouchEnd);
-  
-  newWordElement.addEventListener('mousedown', onMouseDown);
+  newWordElement.addEventListener('touchend', stopDragging);
+
+  newWordElement.addEventListener('mousedown', startDragging);
   newWordElement.addEventListener('mousemove', onMouseMove);
-  newWordElement.addEventListener('mouseup', onMouseUp);
+  newWordElement.addEventListener('mouseup', stopDragging);
+
 
   wordElement.style.display = 'none';
   arrangedContainer.appendChild(newWordElement);
 }
 
 let sourceElement = null;
-let initialMouseX = null;
-let initialMouseY = null;
 
-function startDragging(event, wordElement) {
+function startDragging(event) {
+  const wordElement = event.target.closest('.word');
+  if (!wordElement) {
+    return;
+  }
   event.preventDefault();
   sourceElement = wordElement;
   sourceElement.style.opacity = '0.5';
 }
 
-function onMouseDown(event) {
-  const wordElement = event.target.closest('.word');
-  if (wordElement) startDragging(event, wordElement);
-}
-
-function onTouchStart(event) {
-  const wordElement = event.target.closest('.word');
-  if (wordElement) startDragging(event, wordElement);
-}
 
 function updateDraggedWordPosition(clientX, clientY) {
   const targetElement = findTargetElement(clientX, clientY);
@@ -93,14 +87,12 @@ function onTouchMove(event) {
   updateDraggedWordPosition(event.touches[0].clientX, event.touches[0].clientY);
 }
 
-function onMouseUp() {
-  if (!sourceElement) return;
+function stopDragging(event) {
+  if (!sourceElement) {
+    return;
+  }
   sourceElement.style.opacity = '1';
   sourceElement = null;
-}
-
-function onTouchEnd() {
-  onMouseUp();
 }
 
 function findTargetElement(x, y) {
