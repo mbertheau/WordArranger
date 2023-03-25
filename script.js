@@ -93,7 +93,6 @@ function stopDragging(event) {
   if (!sourceElement) {
     return;
   }
-  sourceElement.style.opacity = '1';
   sourceElement.style.transform = '';
   sourceElement.style.color = '';
   sourceElement = null;
